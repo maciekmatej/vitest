@@ -1,0 +1,18 @@
+html {
+    scroll-behavior: smooth;
+      
+}
+body {
+    margin: 0;
+    
+}
+* {
+    font-family: 'Space Mono', monospace;
+}
+.hidden {
+    
+    opacity: 0;
+}
+img,h2, .card-front, .card-back {
+    pointer-events: none;
+}
