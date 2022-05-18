@@ -4,6 +4,8 @@ import SearchBar from "@/components/SearchBar/SearchBar.vue";
 
 import { ref, reactive, computed, onBeforeMount, onBeforeUnmount } from "vue";
 import type { ApiResponse } from "../types";
+import { useFetchApiData } from "../composables/fetchApiData";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const characters: ApiResponse = reactive({
   results: [] as ApiResponse["results"],
@@ -17,16 +19,18 @@ const filters = reactive({
   gender: [] as string[],
 });
 async function loadNext(): Promise<void> {
-  const req = await fetch(`${characters.info.next}`);
-  const data = await req.json();
+  const url = `${characters.info.next}`;
+  const { getData } = useFetchApiData();
+  const data = await getData(url);
   characters.results = data.results;
   characters.info = data.info;
   currentSite.value += 1;
   window.scrollTo(0, 0);
 }
 async function loadPrev(): Promise<void> {
-  const req = await fetch(`${characters.info.prev}`);
-  const data: ApiResponse = await req.json();
+  const url = `${characters.info.prev}`;
+  const { getData } = useFetchApiData();
+  const data = await getData(url);
   characters.results = data.results;
   characters.info = data.info;
   currentSite.value -= 1;
@@ -58,8 +62,9 @@ const filteredData = computed((): ApiResponse['results'] => {
   });
 });
 onBeforeMount(async (): Promise<void> => {
-  const req = await fetch("https://rickandmortyapi.com/api/character");
-  const data: ApiResponse = await req.json();
+  const url = "https://rickandmortyapi.com/api/character";
+  const { getData } = useFetchApiData();
+  const data = await getData(url);
   characters.results = data.results;
   characters.info = data.info;
   currentSite.value = 1;
@@ -113,7 +118,7 @@ onBeforeUnmount((): void => {
       </button>
     </div>
     <a id="scroll-top" :class="{ hidden: hidden }" href="#">
-      <FontAwesomeIcon class="i" icon="arrowUpLong" />
+      <FontAwesomeIcon class="i" icon="arrow-up"/>
     </a>
   </div>
 </template>
@@ -158,10 +163,8 @@ onBeforeUnmount((): void => {
   box-shadow: 0 0 15px hsl(177, 37%, 65%);
 }
 #scroll-top .i {
-  transform: rotateZ(90deg);
   line-height: 60px;
-  margin-right: 1.2rem;
   color: white;
-  font-size: 2.3rem;
+  font-size: 2.6rem;
 }
 </style>

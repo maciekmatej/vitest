@@ -90,6 +90,7 @@
 <script lang="ts" setup>
 import type { ApiResponse } from "@/types";
 import { reactive, computed } from "vue"
+import { useFetchApiData } from "@/composables/fetchApiData";
 
 const props = defineProps<{
   characters: ApiResponse;
@@ -106,9 +107,9 @@ const searchData = reactive({
 })
 
 const newQuery = async(): Promise<void> => {
-  const API = 'https://rickandmortyapi.com/api/character/?'
-  const res = await fetch(`${API}name=${searchData.nameQuery}`)
-  const data: ApiResponse = await res.json()
+  const url = `https://rickandmortyapi.com/api/character/?name=${searchData.nameQuery}`
+  const { getData } = useFetchApiData();
+  const data = await getData(url);
   emits('new-query', data)
 }
 const filterQuery = (): void => {
